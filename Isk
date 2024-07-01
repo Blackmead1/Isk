@@ -1,0 +1,37 @@
+-- RemoteFunction setup
+local KillAllPlayersFunction = Instance.new("RemoteFunction")
+KillAllPlayersFunction.Name = "KillAllPlayersFunction"
+KillAllPlayersFunction.Parent = game.ReplicatedStorage
+
+-- Function to kill a player's character
+local function killPlayer(player)
+    local character = player.Character
+    if character then
+        character:Destroy()
+    end
+end
+
+-- Function to notify all players
+local function notifyPlayers(message)
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        local messageGui = Instance.new("Message")
+        messageGui.Text = message
+        messageGui.Parent = player.PlayerGui
+        wait(5)  -- Display message for 5 seconds
+        messageGui:Destroy()
+    end
+end
+
+-- Handle client requests to kill all players
+KillAllPlayersFunction.OnServerInvoke = function(player)
+    -- Check if player is authorized to execute this action (optional)
+    -- Implement your own authorization logic here
+
+    -- Loop through all players and kill them
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        killPlayer(player)
+    end
+
+    -- Notify all players that everyone has been killed
+    notifyPlayers("Everyone has been killed!")
+end
